@@ -14,6 +14,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
+  var _isLoading = false;
 
   Future<void> _submitAuthForm(
     BuildContext ctx,
@@ -24,6 +25,9 @@ class _AuthScreenState extends State<AuthScreen> {
   ) async {
     UserCredential authResult;
     try {
+      setState(() {
+        _isLoading = true;
+      });
       if (isLogin) {
         authResult = await _auth.signInWithEmailAndPassword(
           email: email,
@@ -46,6 +50,9 @@ class _AuthScreenState extends State<AuthScreen> {
           },
         );
       }
+      setState(() {
+        _isLoading = false;
+      });
     } on PlatformException catch (error) {
       String? message = 'An error occured, please check your credentials';
 
@@ -59,8 +66,14 @@ class _AuthScreenState extends State<AuthScreen> {
           content: Text(message ?? ''),
         ),
       );
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
       print(error);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -69,6 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: AuthForm(
+        isLoading: _isLoading,
         onSubmit: _submitAuthForm,
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'screens/auth_screen.dart';
 import 'screens/chat_screen.dart';
@@ -20,6 +21,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
         backgroundColor: Colors.pink,
+        textTheme: Theme.of(context).textTheme.copyWith(
+                headline1: const TextStyle(
+              color: Colors.white,
+            )),
         textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(
@@ -64,10 +69,18 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.pink,
         ).copyWith(
           secondary: Colors.deepPurple,
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
         ),
       ),
-      home: const AuthScreen(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            return const ChatScreen();
+          }
+          return const AuthScreen();
+        },
+      ),
     );
   }
 }
