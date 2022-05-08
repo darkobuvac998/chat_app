@@ -39,6 +39,7 @@ class Messages extends StatelessWidget {
                     message: docs[i]['text'],
                     key: ValueKey(docs[i].id),
                     userName: docs[i]['username'],
+                    userImage: docs[i]['userImage'],
                   ),
                   itemCount: docs?.length,
                 );
